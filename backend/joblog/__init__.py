@@ -4,6 +4,7 @@ from config import Config
 from data import DataSource
 from logger import Logger
 from job import Job
+from option import Option
 from pprint import pprint
 
 app = Flask(__name__)
@@ -60,7 +61,7 @@ def handle_job(job_id):
 @app.route('/job/<job_id>/interview', methods=['POST'])
 def add_interview(job_id):
     job_obj = create_job_obj(job_id)
-    return job_obj.add_interview()
+    return job_obj.add_update_interview()
 
 
 @app.route('/job/<job_id>/interview/<int_id>', methods=['GET', 'PATCH', 'DELETE'])
@@ -71,11 +72,10 @@ def handle_interview(job_id, int_id):
         return job_obj.get_interview(int_id)
 
     elif request.method == 'PATCH':
-        job_obj.update_from_request()
-        return job_obj.save()
+        return job_obj.add_update_interview(int_id)
 
     elif request.method == 'DELETE':
-        return job_obj.delete()
+        return job_obj.delete_interview(int_id)
 
 
 @app.route('/jobs', methods=['GET'])
@@ -96,12 +96,14 @@ def get_interviews(job_id):
     return dict(job_obj.interviews)
 
 
-@app.route('/option/<scope>', methods=['GET', 'PATCH'])
+@app.route('/option/<scope>', methods=['GET', 'PUT'])
 def handle_option(scope):
     if request.method == 'GET':
-        return True
-    elif request.method == 'PATCH':
-        return True
+        option_list = Option(data_obj, scope).get_options()
+        return jsonify(option_list)
+
+    elif request.method == 'PUT':
+        return jsonify(Option(data_obj, scope).update())
 
 
 @app.errorhandler(InvalidUsage)

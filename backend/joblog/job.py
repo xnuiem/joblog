@@ -1,6 +1,5 @@
 from flask import request
 from datetime import date
-from pprint import pprint
 from error import InvalidUsage
 from option import Option
 import uuid
@@ -128,9 +127,19 @@ class Job:
         self.data.delete(self.id)
         return {'message': self.id + ' deleted'}
 
-    def add_interview(self):
+    def add_update_interview(self, int_id=None):
         obj = request.get_json()
-        self.interviews.update({ str(uuid.uuid4()): obj['date']})
+        if int_id is None:
+            interview_id = str(uuid.uuid4())
+        else:
+            interview_id = int_id
+
+        self.interviews.update({interview_id: obj['date']})
+        self.save()
+        return self.jobDict()
+
+    def delete_interview(self, int_id):
+        self.interviews.pop(int_id)
         self.save()
         return self.jobDict()
 
@@ -139,6 +148,7 @@ class Job:
             return {int_id: self.interviews[int_id]}
 
         raise InvalidUsage('Interview Key Not Found', 404)
+
 
     def get_list(self):
         return self.data.search('-')

@@ -1,4 +1,6 @@
-
+from flask import request
+from error import InvalidUsage
+from pprint import pprint
 
 
 class Option:
@@ -9,7 +11,12 @@ class Option:
 
     def get_options(self):
         if self.scope is None:
-            return False
+            raise InvalidUsage('Invalid Scope', 404)
 
         return self.data.get(self.scope)
 
+    def update(self):
+        obj = request.get_json()
+        pprint(obj)
+        self.data.update(self.scope, obj['data'])
+        return self.get_options()
