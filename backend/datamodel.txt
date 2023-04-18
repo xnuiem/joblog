@@ -10,6 +10,6 @@
     "offer_date": "date",
     "notes": "Notes",
     "interviews" : [
-        "date": "date"
+        "id": "date"
     ]
 }

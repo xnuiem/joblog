@@ -3,5 +3,5 @@ coverage
 ddt
 xmlrunner
 -e git+https://github.com/codacy/python-codacy-coverage.git#egg=python-codacy-coverage
-redis
 requests
+redis
