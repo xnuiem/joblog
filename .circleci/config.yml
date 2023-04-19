@@ -30,10 +30,10 @@ jobs:
           name: run coverage
           command: |
             python -m coverage run -m pytest backend/joblog/tests/tests.py
-            python -m coverage xml -d test-reports/
+            python -m coverage xml
 
       - coverage-reporter/send_report:
-          coverage-reports: test-reports/coverage.xml
+          coverage-reports: coverage.xml
           skip: false
           project-token: $CODACY_PROJECT_TOKEN
 
