@@ -3,7 +3,6 @@ import json
 import sys, os, inspect
 from backend.joblog import app
 
-
 cmd_folder = os.path.abspath(os.path.join(os.path.split(inspect.getfile(
     inspect.currentframe()))[0], "../.."))
 if cmd_folder not in sys.path:
@@ -55,6 +54,24 @@ class Test_Joblog:
         res = json.loads(response.data.decode('utf-8'))
 
         assert res[3] == 'Fail'
+
+    @pytest.mark.job
+    def test_addjob(self):
+        data = {
+            "title": "VP of Next",
+            "company": "ACME2",
+            "source": "Direct"
+        }
+
+        response = self.send_post('/job', data)
+        add_res = json.loads(response.data.decode('utf-8'))
+        job_id = add_res['id']
+
+        response = app.test_client().get('/job/' + job_id)
+        res = json.loads(response.data.decode('utf-8'))
+
+        assert res['title'] == add_res['title']
+        assert res['title'] == data['title']
 
     @staticmethod
     def create_headers():
