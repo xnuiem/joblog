@@ -22,12 +22,12 @@ jobs:
           name: Run tests
           command: |
             mkdir test-reports/
-            pytest -ra --junitxml=test-reports/report.xml ./backend/tests/tests.py
+            pytest -ra --junitxml=test-reports/report.xml ./backend/joblog/tests/tests.py
 
       - run:
           name: run coverage
           command: |
-            cd backend && coverage run tests/tests.py
+            coverage run ./backend/joblog/tests/tests.py
 
       - store_artifacts:
           path: test-reports/
