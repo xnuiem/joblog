@@ -28,7 +28,7 @@ jobs:
       - run:
           name: run coverage
           command: |
-            python -m coverage run -m pytest backend/joblog/tests/tests.py
+            python -m coverage xml run -m pytest backend/joblog/tests/tests.py
             python -m coverage report
 
       - store_artifacts:
