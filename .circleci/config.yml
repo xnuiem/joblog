@@ -24,3 +24,5 @@ workflows:
   pre-merge:
     jobs:
       - build-and-test
+      
+      
