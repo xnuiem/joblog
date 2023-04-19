@@ -26,9 +26,6 @@ jobs:
             mkdir test-reports/
             pytest -ra --junitxml=test-reports/report.xml ./backend/joblog/tests/tests.py
 
-      - store_test_results:
-          path: test-reports
-
       - run:
           name: run coverage
           command: |
@@ -43,6 +40,9 @@ jobs:
           project-token: $CODACY_PROJECT_TOKEN
 
       - store_artifacts:
+          path: test-reports/
+
+      - store_test_results:
           path: test-reports/
 
 
