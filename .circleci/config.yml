@@ -17,7 +17,7 @@ jobs:
           pkg-manager: pip
       - run:
           name: Run tests
-          command: ./backend/tests/pytest -ra tests.py
+          command: pytest -ra ./backend/tests/tests.py
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
