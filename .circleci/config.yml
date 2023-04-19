@@ -9,7 +9,7 @@ jobs:
   build-and-test:
     docker:
       - image: cimg/python:3.10.2
-      - image: cirlceci/redis:7.0
+      - image: cimg/redis:7.0
     steps:
       - checkout
       - python/install-packages:
