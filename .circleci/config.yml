@@ -31,6 +31,7 @@ jobs:
           command: |
             python -m coverage run -m pytest backend/joblog/tests/tests.py
             python -m coverage xml
+            cp coverage.xml test-reports
 
       - coverage-reporter/send_report:
           coverage-reports: coverage.xml
@@ -38,11 +39,8 @@ jobs:
           project-token: $CODACY_PROJECT_TOKEN
 
       - store_artifacts:
-          path: test-reports/
-          destination: tr1
+          path: test-reports/*.xml
 
-      - store_artifacts:
-          path: test-reports/
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
