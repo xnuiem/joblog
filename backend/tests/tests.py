@@ -52,7 +52,6 @@ class Test_Joblog:
 
         assert res[3] == 'Fail'
 
-
     @staticmethod
     def create_headers():
         headers = {
