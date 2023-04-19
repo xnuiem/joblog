@@ -27,7 +27,7 @@ jobs:
       - run:
           name: run coverage
           command: |
-            coverage run ./backend/tests/tests.py
+            coverage run backend/tests/tests.py
 
       - store_artifacts:
           path: test-reports/
