@@ -32,7 +32,7 @@ jobs:
             python -m coverage run -m pytest backend/joblog/tests/tests.py
             python -m coverage xml
             python -m coverage html
-            cp coverage.html test-reports/
+            cp htmlcov/index.html test-reports/coverage.html
 
       - coverage-reporter/send_report:
           coverage-reports: coverage.xml
