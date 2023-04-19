@@ -14,6 +14,7 @@ jobs:
       - image: cimg/redis:7.0
     steps:
       - checkout
+
       - python/install-packages:
           app-dir: ./backend
           pkg-manager: pip
@@ -27,7 +28,7 @@ jobs:
       - run:
           name: run coverage
           command: |
-            coverage run ./backend/joblog/tests/tests.py
+            cd backend/ && coverage run joblog/tests/tests.py
 
       - store_artifacts:
           path: test-reports/
