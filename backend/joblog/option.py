@@ -17,6 +17,5 @@ class Option:
 
     def update(self):
         obj = request.get_json()
-        pprint(obj)
         self.data.update(self.scope, obj['data'])
         return self.get_options()
