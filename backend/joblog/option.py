@@ -1,6 +1,5 @@
 from flask import request
-from error import InvalidUsage
-from pprint import pprint
+from backend.joblog.error import InvalidUsage
 
 
 class Option:
@@ -17,6 +16,5 @@ class Option:
 
     def update(self):
         obj = request.get_json()
-        pprint(obj)
         self.data.update(self.scope, obj['data'])
         return self.get_options()

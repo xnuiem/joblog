@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify
-from error import InvalidUsage
-from config import Config
-from data import DataSource
-from logger import Logger
-from job import Job
-from option import Option
-from pprint import pprint
+from backend.joblog.error import InvalidUsage
+from backend.joblog.config import Config
+from backend.joblog.data import DataSource
+from backend.joblog.logger import Logger
+from backend.joblog.job import Job
+from backend.joblog.option import Option
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -21,18 +20,23 @@ def create_job_obj(job_id=None):
 
     return obj
 
-
-@app.route('/check/<key>', methods=['GET'])
-def check_key(key):
-    value = data_obj.get(key)
-    return value
-
-
 @app.route('/init/<key>', methods=['GET'])
 def init_data(key):
+    logger.info('In init_data')
     if key == Config.init_key:
+        logger.info('Key is Valid')
         data_obj.init_data()
         ret = {'message': 'Data Init Complete'}
+        return jsonify(ret)
+    else:
+        raise InvalidUsage('Invalid Key', 400)
+
+
+@app.route('/clear/<key>', methods=['GET'])
+def clear_data(key):
+    if key == Config.init_key:
+        data_obj.flush_all()
+        ret = {'message': 'Data Flushed'}
         return jsonify(ret)
     else:
         raise InvalidUsage('Invalid Key', 400)

@@ -1,8 +1,6 @@
 import redis
-from redis.commands.json.path import Path
-import json
-import uuid
 
+from pprint import pprint
 
 class DataSource:
     def __init__(self, config, logger):
