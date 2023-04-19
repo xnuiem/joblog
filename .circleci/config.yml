@@ -2,6 +2,7 @@ version: 2.1
 
 orbs:
   python: circleci/python@1.5.0
+  coverage-reporter: codacy/coverage-reporter@13.13.0
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
@@ -25,11 +26,10 @@ jobs:
             mkdir test-reports/
             pytest -ra --junitxml=test-reports/report.xml ./backend/joblog/tests/tests.py
 
-      - run:
-          name: run coverage
-          command: |
-            python -m coverage xml run -m pytest backend/joblog/tests/tests.py
-            python -m coverage report
+
+      - coverage-reporter/send_report:
+          skip: false
+          project-token: $CODACY_PROJECT_TOKEN
 
       - store_artifacts:
           path: test-reports/
