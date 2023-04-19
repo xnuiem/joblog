@@ -7,7 +7,7 @@ orbs:
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   build-and-test:
-    working_directory: /tmp
+    working_directory: ~/my-project
 
     docker:
       - image: cimg/python:3.10.2
@@ -21,14 +21,14 @@ jobs:
       - run:
           name: Run tests
           command: |
-            mkdir /tmp/artifacts
-            pytest -ra --junitxml=/tmp/artifacts ./backend/tests/tests.py
+            mkdir test-reports/
+            pytest -ra --junitxml=test-reports ./backend/tests/tests.py
 
       - store_artifacts:
-          path: /tmp/art-1
-          destination: artifact-file
+          path: test-reports/
+          destination: tr1
       - store_artifacts:
-          path: /tmp/artifacts
+          path: test-reports/
 
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
