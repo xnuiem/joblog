@@ -47,6 +47,9 @@ class Test_Joblog:
 
     @pytest.mark.option_test
     def test_get_option(self):
+        response = app.test_client().get('/option/')
+        assert response.status_code == 404
+
         response = app.test_client().get('/option/reason')
         res = json.loads(response.data.decode('utf-8'))
 
@@ -63,6 +66,7 @@ class Test_Joblog:
         res = json.loads(response.data.decode('utf-8'))
 
         assert res[3] == 'Fail'
+
 
     @pytest.mark.job
     def test_add_job(self):
