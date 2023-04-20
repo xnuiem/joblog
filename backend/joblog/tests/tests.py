@@ -3,10 +3,14 @@ import json
 import sys, os, inspect
 from backend.joblog import app
 
+from pprint import pprint
+
 cmd_folder = os.path.abspath(os.path.join(os.path.split(inspect.getfile(
     inspect.currentframe()))[0], "../.."))
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
+
+
 
 
 @pytest.mark.unittest
@@ -104,6 +108,23 @@ class Test_Joblog:
         response = app.test_client().get('/job/' + self.job_id)
 
         assert response.status_code == 404
+
+    @pytest.mark.job
+    def test_get_job_list(self):
+        res = self.set_base_data()
+        res1 = self.set_base_data()
+
+        response = app.test_client().get('/jobs')
+        jobs = json.loads(response.data.decode('utf-8'))
+
+        job1 = jobs[res['id']]
+        job2 = jobs[res1['id']]
+
+        assert res['title'] == job1['title']
+        assert res1['title'] == job2['title']
+        assert job1['company'] == job2['company']
+        assert response.status_code == 200
+
 
     @pytest.mark.interview
     def test_add_interview(self):

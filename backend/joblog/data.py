@@ -32,9 +32,6 @@ class DataSource:
     def search(self, term):
         return self.source.keys('*' + term + '*')
 
-    def get_list(self):
-        return self.source.lrange('list', 0, -1)
-
     def init_data(self):
         status_list = ['Applied', 'Interviewing', 'On Hold', 'Stale', 'Declined', 'Rejected']
         reason_list = ['Ghost', 'Location', 'Pay', 'Travel', 'Job', 'Other']
