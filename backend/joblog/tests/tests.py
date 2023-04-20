@@ -12,6 +12,9 @@ if cmd_folder not in sys.path:
 @pytest.mark.unittest
 class Test_Joblog:
 
+    def __int__(self):
+        self.job_id = None
+
     @classmethod
     def setup_class(cls):
         app.test_client().get('/init/alksj3489qyalijo83iqh')
@@ -21,14 +24,8 @@ class Test_Joblog:
         app.test_client().get('/clear/alksj3489qyalijo83iqh')
 
     @pytest.mark.init
-    def test_initdb(self):
+    def test_init_db(self):
         app.test_client().get('/clear/alksj3489qyalijo83iqh')
-
-        response = app.test_client().get('/init/lkasdjfklasjdf')
-        res = json.loads(response.data.decode('utf-8')).get("message")
-
-        assert res == 'Invalid Key'
-        assert response.status_code == 400
 
         response = app.test_client().get('/init/alksj3489qyalijo83iqh')
         res = json.loads(response.data.decode('utf-8')).get("message")
@@ -36,15 +33,23 @@ class Test_Joblog:
         assert res == 'Data Init Complete'
         assert response.status_code == 200
 
+    @pytest.mark.init
+    def test_init_invalid_key(self):
+        response = app.test_client().get('/init/lkasdjfklasjdf')
+        res = json.loads(response.data.decode('utf-8')).get("message")
+
+        assert res == 'Invalid Key'
+        assert response.status_code == 400
+
     @pytest.mark.option_test
-    def test_getoption(self):
+    def test_get_option(self):
         response = app.test_client().get('/option/reason')
         res = json.loads(response.data.decode('utf-8'))
 
         assert res[2] == 'Pay'
 
     @pytest.mark.option_test
-    def test_updateoption(self):
+    def test_update_option(self):
         response = app.test_client().get('/option/reason')
         res = json.loads(response.data.decode('utf-8'))
         res[3] = 'Fail'
@@ -56,22 +61,51 @@ class Test_Joblog:
         assert res[3] == 'Fail'
 
     @pytest.mark.job
-    def test_addjob(self):
+    def test_add_job(self):
         data = {
-            "title": "VP of Next",
-            "company": "ACME2",
+            "title": "VP of First",
+            "company": "ACME",
             "source": "Direct"
         }
 
         response = self.send_post('/job', data)
         add_res = json.loads(response.data.decode('utf-8'))
-        job_id = add_res['id']
+        self.job_id = add_res['id']
 
-        response = app.test_client().get('/job/' + job_id)
+        response = app.test_client().get('/job/' + self.job_id)
         res = json.loads(response.data.decode('utf-8'))
 
         assert res['title'] == add_res['title']
         assert res['title'] == data['title']
+
+    @pytest.mark.job
+    def test_edit_job(self):
+        data = {
+            "title": "VP of First",
+            "company": "ACME",
+            "source": "Direct"
+        }
+
+        response = self.send_post('/job', data)
+        add_res = json.loads(response.data.decode('utf-8'))
+        self.job_id = add_res['id']
+
+        data = {
+            "title": "VP of Second",
+            "company": "ACME2",
+            "source": "Direct"
+        }
+        response = self.send_patch('/job/' + self.job_id, data)
+        res = json.loads(response.data.decode('utf-8'))
+
+        assert res['title'] == data['title']
+        assert res['company'] == data['company']
+
+        response = app.test_client().get('/job/' + self.job_id)
+        res = json.loads(response.data.decode('utf-8'))
+
+        assert res['title'] == data['title']
+        assert res['company'] == data['company']
 
     @staticmethod
     def create_headers():

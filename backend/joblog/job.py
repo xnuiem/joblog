@@ -9,7 +9,7 @@ import uuid
 
 class Job:
 
-    def __init__(self, data):
+    def __init__(self, data, logger):
         self.data = data
         self.id = None
         self.title = None
@@ -23,8 +23,10 @@ class Job:
         self.offer_date = None
         self.notes = None
         self.interviews = {}
+        self.logger = logger
 
     def validate(self):
+        self.logger.info('Validate')
         if self.company is None and self.recruiter is None:
             raise InvalidUsage('Company or Recruiter is required', 400)
 
@@ -49,6 +51,7 @@ class Job:
         return True
 
     def jobDict(self):
+        self.logger.info('jobDict')
         ret = {'company': self.company,
                'id': self.id,
                'interviews': self.interviews,
@@ -65,9 +68,10 @@ class Job:
         return ret
 
     def save(self):
+        self.logger.info('Save Job')
         obj = request.get_json()
         if self.id is None:
-
+            self.logger.info('New Job')
             for key, value in obj.items():
                 setattr(self, key, value)
 
@@ -83,17 +87,18 @@ class Job:
             return False
 
         else:
+            self.logger.info('Update Job')
             setattr(self, 'last_active_date', str(date.today()))
             if self.validate():
                 self.data.update(self.id, self.jobDict())
                 return self.jobDict()
 
     def get(self, key=None):
+        self.logger.info('Get Job')
         if key is None:
             raise InvalidUsage('Record Not Found', 404)
 
         if self.data.exists(key):
-
             obj = self.data.get(key)
 
             self.id = obj['id']
@@ -113,6 +118,7 @@ class Job:
         raise InvalidUsage('Record Not Found', 404)
 
     def update_from_request(self):
+        self.logger.info('Update From Request')
         obj = request.get_json()
 
         for key, value in obj.items():
@@ -124,6 +130,7 @@ class Job:
             return self.jobDict()
 
     def delete(self):
+        self.logger.info('Delete ' + self.id)
         self.data.delete(self.id)
         return {'message': self.id + ' deleted'}
 
@@ -149,9 +156,6 @@ class Job:
 
         raise InvalidUsage('Interview Key Not Found', 404)
 
-
     def get_list(self):
+        self.logger.info('Get Full Job List')
         return self.data.search('-')
-
-
-

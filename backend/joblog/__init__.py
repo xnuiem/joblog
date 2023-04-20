@@ -14,7 +14,7 @@ data_obj = DataSource(Config, logger)
 
 
 def create_job_obj(job_id=None):
-    obj = Job(data_obj)
+    obj = Job(data_obj, logger)
     if job_id is not None:
         obj.get(job_id)
 
@@ -44,7 +44,8 @@ def clear_data(key):
 
 @app.route('/job', methods=['POST'])
 def create_job():
-    return Job(data_obj).save()
+    obj = create_job_obj()
+    return obj.save()
 
 
 @app.route('/job/<job_id>', methods=['GET', 'PATCH', 'DELETE'])
@@ -118,4 +119,4 @@ def handle_invalid_usage(error_obj):
 
 
 if __name__ == '__main__':
-    app.run(host="localhost", port="5000")
+    app.run(host="localhost", port=5000)
