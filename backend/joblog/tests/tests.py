@@ -107,6 +107,29 @@ class Test_Joblog:
         assert res['title'] == data['title']
         assert res['company'] == data['company']
 
+    @pytest.mark.job
+    def test_delete_job(self):
+        data = {
+            "title": "VP of First",
+            "company": "ACME",
+            "source": "Direct"
+        }
+
+        response = self.send_post('/job', data)
+        add_res = json.loads(response.data.decode('utf-8'))
+        self.job_id = add_res['id']
+
+        response = self.send_delete('/job/' + self.job_id)
+        res = json.loads(response.data.decode('utf-8'))
+
+        assert res['message'] == self.job_id + ' deleted'
+        assert response.status_code == 200
+
+        response = app.test_client().get('/job/' + self.job_id)
+
+        assert response.status_code == 404
+
+
     @staticmethod
     def create_headers():
         headers = {
@@ -114,6 +137,9 @@ class Test_Joblog:
             'Accept': 'application/json'
         }
         return headers
+
+    def send_delete(self, url):
+        return app.test_client().delete(url, headers=self.create_headers())
 
     def send_post(self, url, data):
         return app.test_client().post(url, json=data, headers=self.create_headers())
