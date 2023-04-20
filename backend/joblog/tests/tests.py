@@ -2,7 +2,6 @@ import pytest
 import json
 import sys, os, inspect
 from backend.joblog import app
-from pprint import pprint
 
 cmd_folder = os.path.abspath(os.path.join(os.path.split(inspect.getfile(
     inspect.currentframe()))[0], "../.."))
