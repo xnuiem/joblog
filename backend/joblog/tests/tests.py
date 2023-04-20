@@ -2,6 +2,7 @@ import pytest
 import json
 import sys, os, inspect
 from backend.joblog import app
+from pprint import pprint
 
 cmd_folder = os.path.abspath(os.path.join(os.path.split(inspect.getfile(
     inspect.currentframe()))[0], "../.."))
@@ -62,33 +63,17 @@ class Test_Joblog:
 
     @pytest.mark.job
     def test_add_job(self):
-        data = {
-            "title": "VP of First",
-            "company": "ACME",
-            "source": "Direct"
-        }
-
-        response = self.send_post('/job', data)
-        add_res = json.loads(response.data.decode('utf-8'))
-        self.job_id = add_res['id']
+        add_res = self.set_base_data()
 
         response = app.test_client().get('/job/' + self.job_id)
         res = json.loads(response.data.decode('utf-8'))
 
         assert res['title'] == add_res['title']
-        assert res['title'] == data['title']
+        assert res['title'] == "VP of First"
 
     @pytest.mark.job
     def test_edit_job(self):
-        data = {
-            "title": "VP of First",
-            "company": "ACME",
-            "source": "Direct"
-        }
-
-        response = self.send_post('/job', data)
-        add_res = json.loads(response.data.decode('utf-8'))
-        self.job_id = add_res['id']
+        res = self.set_base_data()
 
         data = {
             "title": "VP of Second",
@@ -109,15 +94,7 @@ class Test_Joblog:
 
     @pytest.mark.job
     def test_delete_job(self):
-        data = {
-            "title": "VP of First",
-            "company": "ACME",
-            "source": "Direct"
-        }
-
-        response = self.send_post('/job', data)
-        add_res = json.loads(response.data.decode('utf-8'))
-        self.job_id = add_res['id']
+        res = self.set_base_data()
 
         response = self.send_delete('/job/' + self.job_id)
         res = json.loads(response.data.decode('utf-8'))
@@ -129,6 +106,34 @@ class Test_Joblog:
 
         assert response.status_code == 404
 
+    @pytest.mark.interview
+    def test_add_interview(self):
+        job = self.set_base_data()
+
+        data = {
+            "date": "2023-04-11"
+        }
+        response = self.send_post('/job/' + self.job_id + '/interview', data)
+        res = json.loads(response.data.decode('utf-8'))
+
+        assert response.status_code == 200
+
+        response = app.test_client().get('/job/' + self.job_id)
+        job_new = json.loads(response.data.decode('utf-8'))
+
+        assert (data['date'] in job_new['interviews'].values()) == True
+
+    def set_base_data(self):
+        data = {
+            "title": "VP of First",
+            "company": "ACME",
+            "source": "Direct"
+        }
+
+        response = self.send_post('/job', data)
+        res = json.loads(response.data.decode('utf-8'))
+        self.job_id = res['id']
+        return res
 
     @staticmethod
     def create_headers():
