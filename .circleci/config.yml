@@ -41,12 +41,17 @@ jobs:
       - run:
           name: create openapi spec
           command: |
-            cd backend/joblog/
-            flask spec --output openapi.yaml
-            git config user.email "xnuiem@gmail.com"
-            git config user.name "CircleCI Job"
-            git commit --allow-empty -am "Automcatic Commit from CircleCI"
-            git push
+            if [[ "${CIRCLE_USERNAME}" = "<account>" && -z "${CIRCLE_PULL_REQUEST}"]]
+            then          
+              cd backend/joblog/
+              flask spec --output openapi.yaml
+              git config user.email "xnuiem@gmail.com"
+              git config user.name "CircleCI Job"
+              git commit --allow-empty -am "Automcatic Commit from CircleCI"
+              git push
+            else
+              echo "Not committing to GitHub"
+            fi            
 
       - coverage-reporter/send_report:
           coverage-reports: coverage.xml
