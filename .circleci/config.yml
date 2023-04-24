@@ -43,7 +43,7 @@ jobs:
           command: |
             cd backend/joblog/
             flask spec --output openapi.yaml
-            git config user.email "@{GIT_EMAIL}"
+            git config user.email "${GIT_EMAIL}"
             git config user.name "CircleCI Job"
             git commit --allow-empty -am "Automatic Commit from CircleCI [ci skip]"
             git push
@@ -66,5 +66,5 @@ workflows:
   pre-merge:
     jobs:
       - build-and-test
-      
-      
+
+
