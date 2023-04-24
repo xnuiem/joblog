@@ -18,7 +18,7 @@ jobs:
 
       - add_ssh_keys:
           fingerprints:
-            - "1e:ad:0c:d6:1c:44:49:e2:4a:35:66:6e:bd:bd:ef:bb"
+            - "${GIT_SSH_DEPLOY_FINGERPRINT}"
 
       - python/install-packages:
           app-dir: ./backend
@@ -43,9 +43,9 @@ jobs:
           command: |
             cd backend/joblog/
             flask spec --output openapi.yaml
-            git config user.email "xnuiem@gmail.com"
+            git config user.email "@{GIT_EMAIL}"
             git config user.name "CircleCI Job"
-            git commit --allow-empty -am "Automcatic Commit from CircleCI"
+            git commit --allow-empty -am "Automatic Commit from CircleCI [ci skip]"
             git push
 
       - coverage-reporter/send_report:
