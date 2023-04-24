@@ -10,5 +10,5 @@ class Config(object):
     cache_pass = os.getenv('JOBLOG_DATA_PASS', 'admin')
     cache_db = os.getenv('JOBLOG_DATA_DB', 0)
     init_key = os.getenv('JOBLOG_INIT_KEY', '489ahjedlkyhfkilsh')
-    local_spec_path = os.getenv('JOBLOG_SPEC_FILE', '../openapi.yaml')
+    local_spec_path = os.getenv('JOBLOG_SPEC_FILE', 'openapi.yaml')
     spec_format = os.getenv('JOBLOG_SPEC_FORMAT', 'yaml')
