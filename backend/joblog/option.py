@@ -4,7 +4,7 @@ from backend.joblog.error import InvalidUsage
 
 class Option:
 
-    def __init__(self, data, scope):
+    def __init__(self, data, scope=None):
         self.scope = scope
         self.data = data
 

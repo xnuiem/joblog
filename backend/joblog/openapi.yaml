@@ -1,0 +1,275 @@
+info:
+  title: APIFlask
+  version: 0.1.0
+tags: []
+paths:
+  /job:
+    post:
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful response
+      summary: Create Job
+  /jobs:
+    get:
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful response
+      summary: Get Jobs
+  /init/{key}:
+    get:
+      parameters:
+      - in: path
+        name: key
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Initialize the base data in Redis
+      description: Adds Status/Reason/Source values to Redis
+  /clear/{key}:
+    get:
+      parameters:
+      - in: path
+        name: key
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Clear Data
+  /job/{job_id}:
+    get:
+      parameters:
+      - &id001
+        in: path
+        name: job_id
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id002 {}
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Handle Job
+    patch:
+      parameters:
+      - *id001
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: *id002
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Handle Job
+    delete:
+      parameters:
+      - *id001
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: *id002
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Handle Job
+  /option/{scope}:
+    get:
+      parameters:
+      - &id003
+        in: path
+        name: scope
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id004 {}
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Handle Option
+    put:
+      parameters:
+      - *id003
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: *id004
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Handle Option
+  /job/{job_id}/interview:
+    post:
+      parameters:
+      - in: path
+        name: job_id
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Add Interview
+  /job/{job_id}/interviews:
+    get:
+      parameters:
+      - in: path
+        name: job_id
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Get Interviews
+  /job/{job_id}/interview/{int_id}:
+    get:
+      parameters:
+      - &id005
+        in: path
+        name: job_id
+        schema:
+          type: string
+        required: true
+      - &id006
+        in: path
+        name: int_id
+        schema:
+          type: string
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: &id007 {}
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Handle Interview
+    patch:
+      parameters:
+      - *id005
+      - *id006
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: *id007
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Handle Interview
+    delete:
+      parameters:
+      - *id005
+      - *id006
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: *id007
+          description: Successful response
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Not found
+      summary: Handle Interview
+openapi: 3.0.3
+components:
+  schemas:
+    HTTPError:
+      properties:
+        detail:
+          type: object
+        message:
+          type: string
+      type: object
+

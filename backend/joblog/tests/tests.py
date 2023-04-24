@@ -1,7 +1,7 @@
 import pytest
 import json
 import sys, os, inspect
-from backend.joblog import app
+from backend.joblog.app import app
 
 from pprint import pprint
 
@@ -47,7 +47,7 @@ class Test_Joblog:
 
     @pytest.mark.option_test
     def test_get_option(self):
-        response = app.test_client().get('/option/')
+        response = app.test_client().get('/option')
         assert response.status_code == 404
 
         response = app.test_client().get('/option/reason')
@@ -146,6 +146,12 @@ class Test_Joblog:
         job_new = json.loads(response.data.decode('utf-8'))
 
         assert (data['date'] in job_new['interviews'].values()) == True
+
+    @pytest.mark.spec
+    def test_create_spec_file(self):
+        response = app.test_client().get('/openapi.yaml')
+
+
 
     def set_base_data(self):
         data = {

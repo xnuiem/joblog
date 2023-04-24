@@ -1,4 +1,5 @@
-from flask import Flask, request, jsonify
+from flask import request, jsonify
+from apiflask import APIFlask
 from backend.joblog.error import InvalidUsage
 from backend.joblog.config import Config
 from backend.joblog.data import DataSource
@@ -6,8 +7,11 @@ from backend.joblog.logger import Logger
 from backend.joblog.job import Job
 from backend.joblog.option import Option
 
-app = Flask(__name__)
+
+app = APIFlask(__name__, spec_path='/spec')
 app.config.from_object(Config)
+app.config['SPEC_FORMAT'] = 'yaml'
+
 
 logger = Logger(Config).logger
 data_obj = DataSource(Config, logger)
@@ -20,8 +24,13 @@ def create_job_obj(job_id=None):
 
     return obj
 
+
 @app.route('/init/<key>', methods=['GET'])
 def init_data(key):
+    """Initialize the base data in Redis
+
+    Adds Status/Reason/Source values to Redis
+    """
     logger.info('In init_data')
     if key == Config.init_key:
         logger.info('Key is Valid')
