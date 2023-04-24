@@ -1,13 +1,17 @@
 import redis
+from apiflask import Schema
+from apiflask.fields import String
 
 from pprint import pprint
+
 
 class DataSource:
     def __init__(self, config, logger):
         self.logger = logger
         self.count = 0
         self.last_id = 0
-        self.source = redis.Redis(host=config.cache_host, port=config.cache_port, db=config.cache_db, username=config.cache_user, password=config.cache_pass)
+        self.source = redis.Redis(host=config.cache_host, port=config.cache_port, db=config.cache_db,
+                                  username=config.cache_user, password=config.cache_pass)
 
     def insert(self, key, value):
         self.source.json().set(key, '$', value)
@@ -39,3 +43,13 @@ class DataSource:
         self.insert('status', status_list)
         self.insert('reason', reason_list)
         self.insert('source', source_list)
+
+
+class initData(Schema):
+    key = String(
+        required=True,
+        title="Init Key",
+        description="Init key to validate and ensure user has authority to make the call",
+        example="k489alisjf235423562323623452345lasd"
+    )
+
