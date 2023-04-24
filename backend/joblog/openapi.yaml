@@ -65,7 +65,8 @@ paths:
               schema:
                 $ref: '#/components/schemas/HTTPError'
           description: Not found
-      summary: Clear Data
+      summary: CLears the entire datastore
+      description: Should be used to clear all of Redis
   /job/{job_id}:
     get:
       parameters:
