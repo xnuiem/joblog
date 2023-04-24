@@ -53,3 +53,23 @@ class initData(Schema):
         example="k489alisjf235423562323623452345lasd"
     )
 
+
+class initDataOut(Schema):
+    message = String(
+        example='Data Init Complete',
+        required=False,
+        description='Message returned',
+        title='Message'
+    )
+
+
+dataOutExamples = {
+    'example 200': {
+        'summary': 'Example Success',
+        'value': {'message': 'Data Init Complete'}
+    },
+    'example 400': {
+        'summary': 'Example Invalid Key',
+        'value': {'message': 'Invalid Key'}
+    }
+}

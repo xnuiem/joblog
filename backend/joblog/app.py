@@ -1,5 +1,7 @@
 from flask import request, jsonify
 from apiflask import APIFlask
+
+import backend.joblog.data
 from backend.joblog.error import InvalidUsage
 from backend.joblog.config import Config
 from backend.joblog.data import DataSource, initData, initDataOut
@@ -27,7 +29,7 @@ def create_job_obj(job_id=None):
 
 @app.route('/init/<string:key>', methods=['GET'])
 @app.input(initData)
-@app.output(initDataOut)
+@app.output(initDataOut, examples=backend.joblog.data.dataOutExamples)
 def init_data(key):
     """Initialize the base data in Redis
 
