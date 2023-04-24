@@ -43,6 +43,10 @@ def init_data(key):
 
 @app.route('/clear/<key>', methods=['GET'])
 def clear_data(key):
+    """CLears the entire datastore
+
+    Should be used to clear all of Redis
+    """
     logger.info('In clear')
     if key == Config.init_key:
         data_obj.flush_all()
