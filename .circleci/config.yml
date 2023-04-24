@@ -16,6 +16,10 @@ jobs:
     steps:
       - checkout
 
+      - add_ssh_keys:
+          fingerprints:
+            - "1e:ad:0c:d6:1c:44:49:e2:4a:35:66:6e:bd:bd:ef:bb"
+
       - python/install-packages:
           app-dir: ./backend
           pkg-manager: pip
@@ -33,6 +37,15 @@ jobs:
             python -m coverage xml
             python -m coverage html
             cp htmlcov/index.html test-reports/coverage.html
+
+      - run:
+          name: create openapi spec
+          command: |
+            flask spec --output backend/openapi.yaml
+            git config user.email "xnuiem@gmail.com"
+            git config user.name "CircleCI Job"
+            git commit --allow-empty -am "Automcatic Commit from CircleCI"
+            git push
 
       - coverage-reporter/send_report:
           coverage-reports: coverage.xml
