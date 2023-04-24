@@ -45,7 +45,7 @@ jobs:
             flask spec --output openapi.yaml
             git config user.email "@{GIT_EMAIL}"
             git config user.name "CircleCI Job"
-            git commit -am "Automatic Commit from CircleCI"
+            git commit --allow-empty -am "Automatic Commit from CircleCI [ci skip]"
             git push
 
       - coverage-reporter/send_report:
