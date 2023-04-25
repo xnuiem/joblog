@@ -43,6 +43,12 @@ paths:
                   value:
                     message: Data Init Complete
           description: Successful response
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Bad Request
       summary: Initialize the base data in Redis
       description: Adds Status/Reason/Source values to Redis
   /clear/{key}:
@@ -206,6 +212,13 @@ paths:
 openapi: 3.0.3
 components:
   schemas:
+    HTTPError:
+      properties:
+        detail:
+          type: object
+        message:
+          type: string
+      type: object
     initDataOut:
       type: object
       properties:
