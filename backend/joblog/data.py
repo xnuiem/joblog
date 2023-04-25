@@ -1,6 +1,7 @@
 import redis
 from apiflask import Schema
 from apiflask.fields import String
+from apiflask.validators import Length
 
 from pprint import pprint
 
@@ -45,19 +46,10 @@ class DataSource:
         self.insert('source', source_list)
 
 
-class initData(Schema):
-    key = String(
-        required=True,
-        title="Init Key",
-        description="Init key to validate and ensure user has authority to make the call",
-        example="k489alisjf235423562323623452345lasd"
-    )
-
 
 class initDataOut(Schema):
     message = String(
         example='Data Init Complete',
-        required=False,
         description='Message returned',
         title='Message'
     )

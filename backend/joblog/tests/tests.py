@@ -32,6 +32,7 @@ class Test_Joblog:
         app.test_client().get('/clear/alksj3489qyalijo83iqh')
 
         response = app.test_client().get('/init/alksj3489qyalijo83iqh')
+
         res = json.loads(response.data.decode('utf-8')).get("message")
 
         assert res == 'Data Init Complete'
