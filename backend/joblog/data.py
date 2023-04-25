@@ -1,9 +1,7 @@
 import redis
 from apiflask import Schema
 from apiflask.fields import String
-from apiflask.validators import Length
 
-from pprint import pprint
 
 
 class DataSource:
@@ -54,9 +52,23 @@ class initDataOut(Schema):
     )
 
 
+class clearDataOut(Schema):
+    message = String(
+        example='Data Flushed',
+        description='Message returned',
+        title='Message'
+    )
+
 dataOutExamples = {
     'example 200': {
         'summary': 'Example Success',
         'value': {'message': 'Data Init Complete'}
+    }
+}
+
+clearOutExamples = {
+    'example 200': {
+        'summary': 'Example Success',
+        'value': {'message': 'Data Flushed'}
     }
 }
