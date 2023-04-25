@@ -42,17 +42,7 @@ paths:
                   summary: Example Success
                   value:
                     message: Data Init Complete
-                example 400:
-                  summary: Example Invalid Key
-                  value:
-                    message: Invalid Key
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Initialize the base data in Redis
       description: Adds Status/Reason/Source values to Redis
   /clear/{key}:
@@ -67,14 +57,14 @@ paths:
         '200':
           content:
             application/json:
-              schema: {}
-          description: Successful response
-        '404':
-          content:
-            application/json:
               schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
+                $ref: '#/components/schemas/clearDataOut'
+              examples:
+                example 200:
+                  summary: Example Success
+                  value:
+                    message: Data Flushed
+          description: Successful response
       summary: CLears the entire datastore
       description: Should be used to clear all of Redis
   /job/{job_id}:
@@ -92,12 +82,6 @@ paths:
             application/json:
               schema: &id002 {}
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Handle Job
     patch:
       parameters:
@@ -108,12 +92,6 @@ paths:
             application/json:
               schema: *id002
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Handle Job
     delete:
       parameters:
@@ -124,12 +102,6 @@ paths:
             application/json:
               schema: *id002
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Handle Job
   /option/{scope}:
     get:
@@ -146,12 +118,6 @@ paths:
             application/json:
               schema: &id004 {}
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Handle Option
     put:
       parameters:
@@ -162,12 +128,6 @@ paths:
             application/json:
               schema: *id004
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Handle Option
   /job/{job_id}/interview:
     post:
@@ -183,12 +143,6 @@ paths:
             application/json:
               schema: {}
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Add Interview
   /job/{job_id}/interviews:
     get:
@@ -204,12 +158,6 @@ paths:
             application/json:
               schema: {}
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Get Interviews
   /job/{job_id}/interview/{int_id}:
     get:
@@ -232,12 +180,6 @@ paths:
             application/json:
               schema: &id007 {}
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Handle Interview
     patch:
       parameters:
@@ -249,12 +191,6 @@ paths:
             application/json:
               schema: *id007
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Handle Interview
     delete:
       parameters:
@@ -266,29 +202,24 @@ paths:
             application/json:
               schema: *id007
           description: Successful response
-        '404':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/HTTPError'
-          description: Not found
       summary: Handle Interview
 openapi: 3.0.3
 components:
   schemas:
-    HTTPError:
-      properties:
-        detail:
-          type: object
-        message:
-          type: string
-      type: object
     initDataOut:
       type: object
       properties:
         message:
           type: string
           example: Data Init Complete
+          description: Message returned
+          title: Message
+    clearDataOut:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Data Flushed
           description: Message returned
           title: Message
 
