@@ -11,8 +11,6 @@ if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
 
-
-
 @pytest.mark.unittest
 class Test_Joblog:
 
@@ -67,7 +65,6 @@ class Test_Joblog:
         res = json.loads(response.data.decode('utf-8'))
 
         assert res[3] == 'Fail'
-
 
     @pytest.mark.job
     def test_add_job(self):
@@ -130,7 +127,6 @@ class Test_Joblog:
         assert job1['company'] == job2['company']
         assert response.status_code == 200
 
-
     @pytest.mark.interview
     def test_add_interview(self):
         job = self.set_base_data()
@@ -151,8 +147,6 @@ class Test_Joblog:
     @pytest.mark.spec
     def test_create_spec_file(self):
         response = app.test_client().get('/openapi.yaml')
-
-
 
     def set_base_data(self):
         data = {
