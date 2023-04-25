@@ -12,7 +12,8 @@ paths:
             application/json:
               schema: {}
           description: Successful response
-      summary: Create Job
+      summary: Adds a job to the datastore
+      description: Creates a job for the first time
   /jobs:
     get:
       parameters: []
@@ -35,20 +36,14 @@ paths:
         '200':
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/initDataOut'
-              examples:
-                example 200:
-                  summary: Example Success
-                  value:
-                    message: Data Init Complete
-          description: Successful response
+              schema: {}
+          description: Data Init Complete
         '400':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/HTTPError'
-          description: Bad Request
+          description: Invalid Key
       summary: Initialize the base data in Redis
       description: Adds Status/Reason/Source values to Redis
   /clear/{key}:
@@ -63,15 +58,15 @@ paths:
         '200':
           content:
             application/json:
+              schema: {}
+          description: Data Flushed
+        '400':
+          content:
+            application/json:
               schema:
-                $ref: '#/components/schemas/clearDataOut'
-              examples:
-                example 200:
-                  summary: Example Success
-                  value:
-                    message: Data Flushed
-          description: Successful response
-      summary: CLears the entire datastore
+                $ref: '#/components/schemas/HTTPError'
+          description: Invalid Key
+      summary: Clears the entire datastore
       description: Should be used to clear all of Redis
   /job/{job_id}:
     get:
@@ -219,20 +214,4 @@ components:
         message:
           type: string
       type: object
-    initDataOut:
-      type: object
-      properties:
-        message:
-          type: string
-          example: Data Init Complete
-          description: Message returned
-          title: Message
-    clearDataOut:
-      type: object
-      properties:
-        message:
-          type: string
-          example: Data Flushed
-          description: Message returned
-          title: Message
 
