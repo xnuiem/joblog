@@ -46,7 +46,6 @@ class DataSource:
         self.insert('source', source_list)
 
 
-
 class initDataOut(Schema):
     message = String(
         example='Data Init Complete',
