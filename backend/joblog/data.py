@@ -1,7 +1,4 @@
 import redis
-from apiflask import Schema
-from apiflask.fields import String
-
 
 
 class DataSource:
@@ -42,33 +39,3 @@ class DataSource:
         self.insert('status', status_list)
         self.insert('reason', reason_list)
         self.insert('source', source_list)
-
-
-class initDataOut(Schema):
-    message = String(
-        example='Data Init Complete',
-        description='Message returned',
-        title='Message'
-    )
-
-
-class clearDataOut(Schema):
-    message = String(
-        example='Data Flushed',
-        description='Message returned',
-        title='Message'
-    )
-
-dataOutExamples = {
-    'example 200': {
-        'summary': 'Example Success',
-        'value': {'message': 'Data Init Complete'}
-    }
-}
-
-clearOutExamples = {
-    'example 200': {
-        'summary': 'Example Success',
-        'value': {'message': 'Data Flushed'}
-    }
-}
