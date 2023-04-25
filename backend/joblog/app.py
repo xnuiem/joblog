@@ -30,6 +30,7 @@ def create_job_obj(job_id=None):
 
 @app.route('/init/<key>', methods=['GET'])
 @app.output(initDataOut, examples=backend.joblog.data.dataOutExamples)
+@app.doc(responses=[200, 400])
 def init_data(key):
     """Initialize the base data in Redis
 
