@@ -58,9 +58,5 @@ dataOutExamples = {
     'example 200': {
         'summary': 'Example Success',
         'value': {'message': 'Data Init Complete'}
-    },
-    'example 400': {
-        'summary': 'Example Invalid Key',
-        'value': {'message': 'Invalid Key'}
     }
 }

@@ -4,7 +4,7 @@ from apiflask import APIFlask
 import backend.joblog.data
 from backend.joblog.error import InvalidUsage
 from backend.joblog.config import Config
-from backend.joblog.data import DataSource, initDataOut
+from backend.joblog.data import DataSource, initDataOut, initDataIn
 from backend.joblog.logger import Logger
 from backend.joblog.job import Job
 from backend.joblog.option import Option
@@ -13,6 +13,7 @@ from backend.joblog.option import Option
 app = APIFlask(__name__, spec_path='/spec')
 app.config.from_object(Config)
 app.config['SPEC_FORMAT'] = 'yaml'
+app.config['AUTO_404_RESPONSE'] = False
 
 
 logger = Logger(Config).logger
