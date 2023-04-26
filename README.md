@@ -22,7 +22,7 @@ A way for job seekers to keep organized notes on their job search.
 # <a name="config"></a>Configuration Options
 
 # <a name="api"></a>API Documentation
-The API documentation can be found here: [OpenAPI](https://xnuiem.github.io/joblog/backend/joblog/index.html)
+The API documentation can be found here: [OpenAPI](https://xnuiem.github.io/joblog/backend/joblog/docs/index.html)
 
 # <a name="credits"></a>Credits
 Xnuiem - Ryan C Meinzer - https://thescrum.ninja

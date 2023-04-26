@@ -42,7 +42,7 @@ jobs:
           name: create openapi spec
           command: |
             cd backend/joblog/
-            flask spec --output openapi.yaml
+            flask spec --output docs/openapi.yaml
             git config user.email "${GIT_EMAIL}"
             git config user.name "CircleCI Job"
             git commit --allow-empty -am "Automatic Commit from CircleCI [ci skip]"
