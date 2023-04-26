@@ -18,16 +18,13 @@ class ClearDataOut(Schema):
 
 
 dataOutExample = {
-    '200': {
-        'summary': 'Example Success',
-        'value': {'message': 'Data Init Complete'}
-    }
+    'message': 'Data Init Complete'
 }
 
+dataInvalidKeyExample = {
+    'message': 'Invalid Key'
+}
 
 clearOutExample = {
-    '200': {
-        'summary': 'Example Success',
-        'value': {'message': 'Data Flushed'}
-    }
+    'message': 'Data Flushed'
 }
