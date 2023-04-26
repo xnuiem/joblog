@@ -1,6 +1,5 @@
 from flask import request, jsonify, Flask
 
-
 from backend.joblog.error import InvalidUsage
 from backend.joblog.config import Config
 from backend.joblog.data import DataSource
@@ -8,10 +7,8 @@ from backend.joblog.logger import Logger
 from backend.joblog.job import Job
 from backend.joblog.option import Option
 
-
 app = Flask(__name__)
 app.config.from_object(Config)
-
 
 logger = Logger(Config).logger
 data_obj = DataSource(Config, logger)
@@ -138,3 +135,5 @@ def handle_invalid_usage(error_obj):
 
 if __name__ == '__main__':
     app.run(host="localhost", port=5000)
+
+
