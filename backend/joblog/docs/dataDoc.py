@@ -4,9 +4,8 @@ from apiflask.fields import String
 
 class InitDataOut(Schema):
     message = String(
-        example='Data Init Complete',
-        description='Message returned',
-        title='Message'
+        required=True,
+        metadata={'description': 'Return Message'}
     )
 
 
@@ -18,15 +17,16 @@ class ClearDataOut(Schema):
     )
 
 
-dataOutExamples = {
-    'example 200': {
+dataOutExample = {
+    '200': {
         'summary': 'Example Success',
         'value': {'message': 'Data Init Complete'}
     }
 }
 
-clearOutExamples = {
-    'example 200': {
+
+clearOutExample = {
+    '200': {
         'summary': 'Example Success',
         'value': {'message': 'Data Flushed'}
     }

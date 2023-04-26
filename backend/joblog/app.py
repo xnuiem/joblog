@@ -4,7 +4,7 @@ from apiflask import APIFlask
 from backend.joblog.error import InvalidUsage
 from backend.joblog.config import Config
 from backend.joblog.data import DataSource
-from backend.joblog.docs.dataDoc import dataOutExamples, clearOutExamples, InitDataOut, ClearDataOut
+from backend.joblog.docs.dataDoc import dataOutExample, clearOutExample, InitDataOut, ClearDataOut
 from backend.joblog.logger import Logger
 from backend.joblog.job import Job
 from backend.joblog.option import Option
@@ -29,7 +29,8 @@ def create_job_obj(job_id=None):
 
 
 @app.route('/init/<key>', methods=['GET'])
-#@app.output(initDataOut, examples=dataOutExamples)
+@app.output(InitDataOut, 200, example=dataOutExample)
+@app.output(InitDataOut, 400, description='Invalid Key', example=clearOutExample)
 @app.doc(responses={200: 'Data Init Complete', 400: 'Invalid Key'})
 def init_data(key):
     """Initialize the base data in Redis
@@ -47,7 +48,7 @@ def init_data(key):
 
 
 @app.route('/clear/<key>', methods=['GET'])
-#@app.output(clearDataOut, examples=clearOutExamples)
+#@app.output(ClearDataOut, example=clearOutExample)
 @app.doc(responses={200: 'Data Flushed', 400: 'Invalid Key'})
 def clear_data(key):
     """Clears the entire datastore
