@@ -36,7 +36,13 @@ paths:
         '200':
           content:
             application/json:
-              schema: {}
+              schema:
+                $ref: '#/components/schemas/InitDataOut'
+              example:
+                '200':
+                  summary: Example Success
+                  value:
+                    message: Data Init Complete
           description: Data Init Complete
         '400':
           content:
@@ -214,4 +220,12 @@ components:
         message:
           type: string
       type: object
+    InitDataOut:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Return Message
+      required:
+      - message
 
