@@ -4,7 +4,7 @@ from apiflask import APIFlask
 from backend.joblog.error import InvalidUsage
 from backend.joblog.config import Config
 from backend.joblog.data import DataSource
-from backend.joblog.docs.dataDoc import dataOutExample, clearOutExample, InitDataOut, ClearDataOut, dataInvalidKeyExample
+from backend.joblog.docs.dataDoc import dataOutExample, clearOutExample, InitDataOut, dataInvalidKeyExample
 from backend.joblog.logger import Logger
 from backend.joblog.job import Job
 from backend.joblog.option import Option
@@ -49,7 +49,7 @@ def init_data(key):
 
 @app.route('/clear/<key>', methods=['GET'])
 @app.output(InitDataOut, status_code=400, example=dataInvalidKeyExample)
-@app.output(ClearDataOut, status_code=200, example=clearOutExample)
+@app.output(InitDataOut, status_code=200, example=clearOutExample)
 @app.doc(responses={200: 'Data Flushed', 400: 'Invalid Key'})
 def clear_data(key):
     """Clears the entire datastore

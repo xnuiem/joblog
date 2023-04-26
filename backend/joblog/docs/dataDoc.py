@@ -9,14 +9,6 @@ class InitDataOut(Schema):
     )
 
 
-class ClearDataOut(Schema):
-    message = String(
-        example='Data Flushed',
-        description='Message returned',
-        title='Message'
-    )
-
-
 dataOutExample = {
     'message': 'Data Init Complete'
 }
