@@ -33,19 +33,20 @@ paths:
           type: string
         required: true
       responses:
-        '400':
+        '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/InitDataOut'
               example:
-                message: Invalid Key
-          description: Invalid Key
-        '200':
+                message: Data Init Complete
+          description: Data Init Complete
+        '400':
           content:
             application/json:
-              schema: {}
-          description: Data Init Complete
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Invalid Key
       summary: Initialize the base data in Redis
       description: Adds Status/Reason/Source values to Redis
   /clear/{key}:
@@ -57,19 +58,20 @@ paths:
           type: string
         required: true
       responses:
-        '400':
+        '200':
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/InitDataOut'
               example:
-                message: Invalid Key
-          description: Invalid Key
-        '200':
+                message: Data Flushed
+          description: Data Flushed
+        '400':
           content:
             application/json:
-              schema: {}
-          description: Data Flushed
+              schema:
+                $ref: '#/components/schemas/HTTPError'
+          description: Invalid Key
       summary: Clears the entire datastore
       description: Should be used to clear all of Redis
   /job/{job_id}:
@@ -211,6 +213,13 @@ paths:
 openapi: 3.0.3
 components:
   schemas:
+    HTTPError:
+      properties:
+        detail:
+          type: object
+        message:
+          type: string
+      type: object
     InitDataOut:
       type: object
       properties:
