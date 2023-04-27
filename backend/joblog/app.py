@@ -6,13 +6,13 @@ from backend.joblog.data import DataSource
 from backend.joblog.logger import Logger
 from backend.joblog.job import Job
 from backend.joblog.option import Option
-from backend.joblog.docs.dataDoc import dataOutExample, clearOutExample, InitDataOut, dataInvalidKeyExample
+from backend.joblog.docs.dataDoc import dataOutExample, clearOutExample, InitDataOut, dataInvalidKeyExample, \
+    jobDataExample, JobSchema
 
 app = APIFlask(__name__, spec_path='/spec')
 app.config.from_object(Config)
 app.config['SPEC_FORMAT'] = 'yaml'
 app.config['AUTO_404_RESPONSE'] = False
-
 
 logger = Logger(Config).logger
 data_obj = DataSource(Config, logger)
@@ -63,8 +63,8 @@ def clear_data(key):
 
 
 @app.route('/job', methods=['POST'])
-#@app.output(JobSchema, 201, example=jobDataExample)
-#@app.input(JobSchema, 201, example=jobDataExample)
+@app.output(JobSchema, 201, example=jobDataExample)
+@app.input(JobSchema, example=jobDataExample)
 def create_job():
     """Adds a job to the datastore
 
@@ -146,5 +146,3 @@ def handle_invalid_usage(error_obj):
 
 if __name__ == '__main__':
     app.run(host="localhost", port=5000)
-
-
