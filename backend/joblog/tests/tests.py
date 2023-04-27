@@ -68,6 +68,12 @@ class Test_Joblog:
 
     @pytest.mark.job
     def test_add_job(self):
+        res = self.set_base_data()
+
+        assert self.response.status_code == 201
+
+    @pytest.mark.job
+    def test_edit_job(self):
         add_res = self.set_base_data()
 
         response = app.test_client().get('/job/' + self.job_id)
@@ -129,7 +135,7 @@ class Test_Joblog:
 
     @pytest.mark.interview
     def test_add_interview(self):
-        job = self.set_base_data()
+        self.set_base_data()
 
         data = {
             "date": "2023-04-11"
@@ -149,16 +155,17 @@ class Test_Joblog:
         response = app.test_client().get('/openapi.yaml')
 
     def set_base_data(self):
-        data = {
+        self.data = {
             "title": "VP of First",
             "company": "ACME",
             "source": "Direct"
         }
 
-        response = self.send_post('/job', data)
-        res = json.loads(response.data.decode('utf-8'))
+        self.response = self.send_post('/job', self.data)
+        res = json.loads(self.response.data.decode('utf-8'))
         self.job_id = res['id']
         return res
+
 
     @staticmethod
     def create_headers():
@@ -168,14 +175,18 @@ class Test_Joblog:
         }
         return headers
 
+
     def send_delete(self, url):
         return app.test_client().delete(url, headers=self.create_headers())
+
 
     def send_post(self, url, data):
         return app.test_client().post(url, json=data, headers=self.create_headers())
 
+
     def send_put(self, url, data):
         return app.test_client().put(url, json=data, headers=self.create_headers())
+
 
     def send_patch(self, url, data):
         return app.test_client().patch(url, json=data, headers=self.create_headers())
