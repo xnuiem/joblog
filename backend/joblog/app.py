@@ -28,6 +28,7 @@ def create_job_obj(job_id=None):
 
 @app.route('/init/<key>', methods=['GET'])
 @app.output(InitDataOut, 200, example=dataOutExample)
+@app.output(InitDataOut, 200, example=dataInvalidKeyExample)
 @app.doc(responses={200: 'Data Init Complete', 400: 'Invalid Key'})
 def init_data(key):
     """Initialize the base data in Redis
@@ -62,6 +63,8 @@ def clear_data(key):
 
 
 @app.route('/job', methods=['POST'])
+#@app.output(JobSchema, 201, example=jobDataExample)
+#@app.input(JobSchema, 201, example=jobDataExample)
 def create_job():
     """Adds a job to the datastore
 
