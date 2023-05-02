@@ -1,18 +1,14 @@
-from flask import request, jsonify
-from apiflask import APIFlask
+from flask import request, jsonify, Flask
+
 from backend.joblog.error import InvalidUsage
 from backend.joblog.config import Config
 from backend.joblog.data import DataSource
 from backend.joblog.logger import Logger
 from backend.joblog.job import Job
 from backend.joblog.option import Option
-from backend.joblog.docs.dataDoc import dataOutExample, clearOutExample, InitDataOut, dataInvalidKeyExample, \
-    jobDataExample, JobSchema
 
-app = APIFlask(__name__, spec_path='/spec')
+app = Flask(__name__)
 app.config.from_object(Config)
-app.config['SPEC_FORMAT'] = 'yaml'
-app.config['AUTO_404_RESPONSE'] = False
 
 logger = Logger(Config).logger
 data_obj = DataSource(Config, logger)
@@ -27,14 +23,7 @@ def create_job_obj(job_id=None):
 
 
 @app.route('/init/<key>', methods=['GET'])
-@app.output(InitDataOut, 200, example=dataOutExample)
-@app.output(InitDataOut, 200, example=dataInvalidKeyExample)
-@app.doc(responses={200: 'Data Init Complete', 400: 'Invalid Key'})
 def init_data(key):
-    """Initialize the base data in Redis
-
-    Adds Status/Reason/Source values to Redis
-    """
     logger.info('In init_data')
     if key == Config.init_key:
         logger.info('Key is Valid')
@@ -46,8 +35,6 @@ def init_data(key):
 
 
 @app.route('/clear/<key>', methods=['GET'])
-@app.output(InitDataOut, status_code=200, example=clearOutExample)
-@app.doc(responses={200: 'Data Flushed', 400: 'Invalid Key'})
 def clear_data(key):
     """Clears the entire datastore
 
@@ -63,9 +50,7 @@ def clear_data(key):
 
 
 @app.route('/job', methods=['POST'])
-@app.output(JobSchema, 201, example=jobDataExample)
-@app.input(JobSchema, example=jobDataExample)
-def create_job():
+def create_job(body=None):
     """Adds a job to the datastore
 
     Creates a job for the first time

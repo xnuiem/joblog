@@ -138,12 +138,14 @@ class Job:
         obj = request.get_json()
         if int_id is None:
             interview_id = str(uuid.uuid4())
+            http_code = 201
         else:
             interview_id = int_id
+            http_code = 200
 
         self.interviews.update({interview_id: obj['date']})
         self.save()
-        return self.jobDict()
+        return self.jobDict(), http_code
 
     def delete_interview(self, int_id):
         self.interviews.pop(int_id)
@@ -154,7 +156,7 @@ class Job:
         if int_id in self.interviews:
             return {int_id: self.interviews[int_id]}
 
-        raise InvalidUsage('Interview Key Not Found', 404)
+        raise InvalidUsage('Record Not Found', 404)
 
     def get_list(self):
         self.logger.info('Get Full Job List')

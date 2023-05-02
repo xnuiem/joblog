@@ -1,231 +1,907 @@
 info:
-  title: APIFlask
+  description: An easy to use API for logging Job search activities.
+  title: Job Log
   version: 0.1.0
-tags: []
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+servers:
+  - url: https://thescrum.ninja/joblog
+tags:
+  - name: job
+    description: Job Object Endpoints
+  - name: misc
+    description: General Operations
 paths:
-  /job:
-    post:
-      parameters: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema: {}
-          description: Successful response
-      summary: Adds a job to the datastore
-      description: Creates a job for the first time
-  /jobs:
-    get:
-      parameters: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema: {}
-          description: Successful response
-      summary: Get Jobs
   /init/{key}:
     get:
+      tags:
+        - misc
+      description: "Sets the base values for Source, Status, Reason"
+      summary: "Sets the base data for the lists"
       parameters:
-      - in: path
-        name: key
-        schema:
-          type: string
-        required: true
+        - in: path
+          name: key
+          required: true
+          schema:
+            $ref: '#/components/schemas/InitIn'
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InitDataOut'
-              example:
-                message: Data Init Complete
           description: Data Init Complete
-        '400':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPError'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Data Init Complete'
+        '400':
           description: Invalid Key
-      summary: Initialize the base data in Redis
-      description: Adds Status/Reason/Source values to Redis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitOutInvalid'
+
   /clear/{key}:
     get:
+      tags:
+        - misc
+      description: "This is a sharp knife.  Be careful. You have been warned."
+      summary: "Clears the Redis datastore"
       parameters:
-      - in: path
-        name: key
-        schema:
-          type: string
-        required: true
+        - in: path
+          name: key
+          required: true
+          schema:
+            $ref: '#/components/schemas/InitIn'
       responses:
         '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InitDataOut'
-              example:
-                message: Data Flushed
           description: Data Flushed
-        '400':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/HTTPError'
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: 'Data Flushed'
+        '400':
           description: Invalid Key
-      summary: Clears the entire datastore
-      description: Should be used to clear all of Redis
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InitOutInvalid'
+
+  /job:
+    post:
+      tags:
+        - job
+      description: 'Add a new job'
+      summary: 'Create Job'
+      requestBody:
+        description: 'Create Job'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobIn'
+
+      responses:
+        '201':
+          description: Job Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOut'
+        '400':
+          description: 'Validation Errors'
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidSource'
+                  - $ref: '#/components/schemas/TitleRequired'
+                  - $ref: '#/components/schemas/CompanyRecruiterRequired'
+
+
   /job/{job_id}:
     get:
+      tags:
+        - job
+      description: 'Get a Job by ID'
+      summary: 'Get a Job by ID'
       parameters:
-      - &id001
-        in: path
-        name: job_id
-        schema:
-          type: string
-        required: true
+        - in: path
+          name: job_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/JobID'
       responses:
         '200':
+          description: 'Job Found'
           content:
             application/json:
-              schema: &id002 {}
-          description: Successful response
-      summary: Handle Job
-    patch:
-      parameters:
-      - *id001
-      responses:
-        '200':
+              schema:
+                $ref: '#/components/schemas/JobOut'
+        '404':
+          description: 'Record Not Found'
           content:
             application/json:
-              schema: *id002
-          description: Successful response
-      summary: Handle Job
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
     delete:
+      tags:
+        - job
+      description: 'Delete Job by ID'
+      summary: 'Delete Job by ID'
       parameters:
-      - *id001
+        - in: path
+          name: job_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/JobID'
       responses:
         '200':
+          description: 'Job Deleted'
           content:
             application/json:
-              schema: *id002
-          description: Successful response
-      summary: Handle Job
-  /option/{scope}:
+              schema:
+                $ref: '#/components/schemas/JobDeleteOut'
+        '404':
+          description: 'Record Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
+    patch:
+      tags:
+        - job
+      description: 'Patch (Update) Job by ID'
+      summary: 'Patch (Update) Job by ID'
+      parameters:
+        - in: path
+          name: job_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/JobID'
+      requestBody:
+        description: 'Update a Job'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobPatch'
+
+      responses:
+        '200':
+          description: 'Job Updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobPatchOut'
+        '404':
+          description: 'Record Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
+
+        '400':
+          description: 'Validation Errors'
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/InvalidStatus'
+                  - $ref: '#/components/schemas/InvalidReason'
+                  - $ref: '#/components/schemas/InvalidSource'
+
+  /jobs:
     get:
-      parameters:
-      - &id003
-        in: path
-        name: scope
-        schema:
-          type: string
-        required: true
+      tags:
+        - job
+      description: 'List All Jobs'
+      summary: 'List All Jobs'
       responses:
         '200':
+          description: 'Jobs Found'
           content:
             application/json:
-              schema: &id004 {}
-          description: Successful response
-      summary: Handle Option
-    put:
-      parameters:
-      - *id003
-      responses:
-        '200':
+              schema:
+                $ref: '#/components/schemas/JobsOut'
+        '404':
+          description: 'Record Not Found'
           content:
             application/json:
-              schema: *id004
-          description: Successful response
-      summary: Handle Option
-  /job/{job_id}/interview:
-    post:
-      parameters:
-      - in: path
-        name: job_id
-        schema:
-          type: string
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema: {}
-          description: Successful response
-      summary: Add Interview
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
+
   /job/{job_id}/interviews:
     get:
+      tags:
+        - interview
+      description: 'List All Interviews for a given job'
+      summary: 'List All Interviews for a given job'
       parameters:
-      - in: path
-        name: job_id
-        schema:
-          type: string
-        required: true
+        - in: path
+          name: job_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/JobID'
       responses:
         '200':
+          description: 'Interviews Found'
           content:
             application/json:
-              schema: {}
-          description: Successful response
-      summary: Get Interviews
-  /job/{job_id}/interview/{int_id}:
+              schema:
+                $ref: '#/components/schemas/InterviewsOut'
+        '404':
+          description: 'Record Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
+
+  /job/{job_id}/interview:
+    post:
+      tags:
+        - interview
+      description: 'Add an Interview to a job'
+      summary: 'Create Interview'
+      requestBody:
+        description: 'Create Interview'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InterviewIn'
+      parameters:
+        - in: path
+          name: job_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/JobID'
+      responses:
+        '201':
+          description: 'Interview Created'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobOut'
+        '404':
+          description: 'Record Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
+
+  /option/{scope}:
     get:
+      tags:
+        - misc
+      description: 'Get Options by Scope'
+      summary: 'Get Options by Scope'
       parameters:
-      - &id005
-        in: path
-        name: job_id
-        schema:
-          type: string
-        required: true
-      - &id006
-        in: path
-        name: int_id
-        schema:
-          type: string
-        required: true
+        - in: path
+          name: scope
+          required: true
+          schema:
+            $ref: '#/components/schemas/ScopeIn'
       responses:
         '200':
+          description: 'Options Found'
           content:
             application/json:
-              schema: &id007 {}
-          description: Successful response
-      summary: Handle Interview
-    patch:
+              schema:
+                $ref: '#/components/schemas/ScopeOut'
+        '404':
+          description: 'Record Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
+    put:
+      tags:
+        - misc
+      description: 'Update Option List'
+      summary: 'Update an Option List'
       parameters:
-      - *id005
-      - *id006
+        - in: path
+          name: scope
+          required: true
+          schema:
+            $ref: '#/components/schemas/ScopeIn'
+      requestBody:
+        description: 'Update an Option List'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OptionPut'
       responses:
         '200':
+          description: 'Options Found'
           content:
             application/json:
-              schema: *id007
-          description: Successful response
-      summary: Handle Interview
+              schema:
+                $ref: '#/components/schemas/ScopeOut'
+        '404':
+          description: 'Record Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
+
+
+
+  /job/{job_id}/interview/{interview_id}:
+    get:
+      tags:
+        - interview
+      description: 'Get a Interview by ID'
+      summary: 'Get a Interview by ID'
+      parameters:
+        - in: path
+          name: job_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/JobID'
+        - in: path
+          name: interview_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/InterviewID'
+
+      responses:
+        '200':
+          description: 'Interview Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InterviewOut'
+        '404':
+          description: 'Record Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
     delete:
+      tags:
+        - interview
+      description: 'Delete Interview by ID'
+      summary: 'Delete Interview by ID'
       parameters:
-      - *id005
-      - *id006
+        - in: path
+          name: job_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/JobID'
+        - in: path
+          name: interview_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/InterviewID'
       responses:
         '200':
+          description: 'Interview Deleted'
           content:
             application/json:
-              schema: *id007
-          description: Successful response
-      summary: Handle Interview
-openapi: 3.0.3
+              schema:
+                $ref: '#/components/schemas/JobOut'
+        '404':
+          description: 'Record Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
+    patch:
+      tags:
+        - interview
+      description: 'Patch (Update) Interview by ID'
+      summary: 'Patch (Update) Interview by ID'
+      parameters:
+        - in: path
+          name: job_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/JobID'
+        - in: path
+          name: interview_id
+          required: true
+          schema:
+            $ref: '#/components/schemas/InterviewID'
+      requestBody:
+        description: 'Update a Job'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/JobPatch'
+
+      responses:
+        '200':
+          description: 'Job Updated'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobPatchOut'
+        '404':
+          description: 'Record Not Found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobNotFound'
+
+
+
+
+
+openapi: 3.0.2
 components:
   schemas:
-    HTTPError:
-      properties:
-        detail:
-          type: object
-        message:
-          type: string
+    InitIn:
+      type: string
+      example: 'uU83l09H287alhj3&ldjkh347A'
+
+    ScopeIn:
+      type: string
+      enum: [ 'reason', 'scope', 'source' ]
+      example: reason
+
+
+    ScopeOut:
+      type: array
+      items:
+        type: string
+      oneOf:
+        - example: [ 'Ghost','Location','Pay','Travel','Job','Other' ]
+        - example: [ 'Applied', 'Interviewing', 'On Hold', 'Stale', 'Declined', 'Rejected' ]
+        - example: [ 'LinkedIn', 'Indeed', 'Direct', 'Recruiter', 'Dice', 'Friend' ]
+
+    OptionPut:
       type: object
-    InitDataOut:
+      properties:
+        data:
+          type: string
+          example: [ 'Applied', 'Interviewing', 'On Hold', 'Stale', 'Declined', 'Rejected', 'Gave Up' ]
+
+    InitOutInvalid:
       type: object
       properties:
         message:
+          example: 'Invalid Key'
           type: string
-          description: Return Message
+
+    JobID:
+      type: string
+      example: 'aecb77e5-5f38-4dbe-b1f4-15119384ccce'
+
+    InterviewID:
+      type: string
+      example: 'ed80d391-7b4b-4276-b747-7c82fb5cac09'
+
+    JobDeleteOut:
+      type: object
+      properties:
+        message:
+          example: 'aecb77e5-5f38-4dbe-b1f4-15119384ccce deleted'
+          type: string
+
+    JobNotFound:
+      type: object
+      properties:
+        message:
+          example: 'Record Not Found'
+          type: string
+
+    InvalidStatus:
+      type: object
+      properties:
+        message:
+          example: 'Invalid Status'
+          type: string
+
+    InvalidSource:
+      type: object
+      properties:
+        message:
+          example: 'Invalid Source'
+          type: string
+
+    InvalidReason:
+      type: object
+      properties:
+        message:
+          example: 'Invalid Reason'
+          type: string
+
+    TitleRequired:
+      type: object
+      properties:
+        message:
+          example: 'Title is Required'
+          type: string
+
+    CompanyRecruiterRequired:
+      type: object
+      properties:
+        message:
+          example: 'Company or Recruiter is Required'
+          type: string
+
+
+    InterviewIn:
+      type: object
+      properties:
+        date:
+          example: '2023-04-11'
+          type: string
+
+    InterviewOut:
+      type: object
+      properties:
+        2a8a9474-ca6f-46a8-837d-12ec11da917b:
+          type: string
+          example: '2023-04-15'
+
+
+    InterviewsOut:
+      type: object
+      properties:
+        2a8a9474-ca6f-46a8-837d-12ec11da917b:
+          type: string
+          example: '2023-04-15'
+        a825b18e-e7f8-4bd0-a779-52d706e29b8a:
+          type: string
+          example: '2023-04-20'
+
+
+    JobIn:
       required:
-      - message
+        - source
+        - title
+      type: object
+      description: 'Job Object'
+      properties:
+        company:
+          example: 'ACME'
+          type: string
+          description: 'Either Company or Recruiter are required'
+        notes:
+          example: 'Something about Cyber Security with a Telco in Austin'
+          type: string
+          default: ''
+        recruiter:
+          example: 'In Global Power Systems'
+          type: string
+          description: 'Either Company or Recruiter are required'
+        source:
+          example: 'LinkedIn'
+          type: string
+          enum:
+            - 'LinkedIn'
+            - 'Indeed'
+            - 'Direct'
+            - 'Recruiter'
+            - 'Dice'
+            - 'Friend'
+        title:
+          example: 'VP of Awesome'
+          type: string
+        status:
+          example: 'Applied'
+          default: 'Applied'
+          type: string
+          enum:
+            - 'Applied'
+            - 'Interviewing'
+            - 'On Hold'
+            - 'Stale'
+            - 'Declined'
+            - 'Rejected'
+
+    JobOut:
+      type: object
+      description: 'Job Object'
+      properties:
+        id:
+          example: 'aecb77e5-5f38-4dbe-b1f4-15119384ccce'
+          type: string
+        company:
+          example: 'ACME'
+          type: string
+          description: 'Either Company or Recruiter are required'
+        notes:
+          example: 'Something about Cyber Security with a Telco in Austin'
+          type: string
+          default: ''
+        recruiter:
+          example: 'In Global Power Systems'
+          type: string
+          description: 'Either Company or Recruiter are required'
+        source:
+          example: 'LinkedIn'
+          type: string
+          enum:
+            - 'LinkedIn'
+            - 'Indeed'
+            - 'Direct'
+            - 'Recruiter'
+            - 'Dice'
+            - 'Friend'
+        title:
+          example: 'VP of Awesome'
+          type: string
+        status:
+          example: 'Applied'
+          type: string
+          enum:
+            - 'Applied'
+            - 'Interviewing'
+            - 'On Hold'
+            - 'Stale'
+            - 'Declined'
+            - 'Rejected'
+        last_active_date:
+          example: '2023-04-01'
+          type: string
+        create_date:
+          example: '2023-03-05'
+          type: string
+        offer_date:
+          example: '2023-06-01'
+          type: string
+        reason:
+          example: 'Pay'
+          type: string
+          enum:
+            - 'Ghost'
+            - 'Location'
+            - 'Pay'
+            - 'Travel'
+            - 'Job'
+            - 'Other'
+        interviews:
+          type: object
+          properties:
+            2a8a9474-ca6f-46a8-837d-12ec11da917b:
+              type: string
+              example: '2023-04-15'
+            a825b18e-e7f8-4bd0-a779-52d706e29b8a:
+              type: string
+              example: '2023-04-20'
+
+
+    JobPatch:
+      type: object
+      description: 'Job Object'
+      properties:
+        company:
+          example: 'Brand X'
+          type: string
+          description: 'Either Company or Recruiter are required'
+        source:
+          example: 'Direct'
+          type: string
+          enum:
+            - 'LinkedIn'
+            - 'Indeed'
+            - 'Direct'
+            - 'Recruiter'
+            - 'Dice'
+            - 'Friend'
+
+    JobPatchOut:
+      type: object
+      description: 'Job Object'
+      properties:
+        id:
+          example: 'aecb77e5-5f38-4dbe-b1f4-15119384ccce'
+          type: string
+        company:
+          example: 'Brand X'
+          type: string
+          description: 'Either Company or Recruiter are required'
+        notes:
+          example: 'Something about Cyber Security with a Telco in Austin'
+          type: string
+          default: ''
+        recruiter:
+          example: 'In Global Power Systems'
+          type: string
+          description: 'Either Company or Recruiter are required'
+        source:
+          example: 'Direct'
+          type: string
+          enum:
+            - 'LinkedIn'
+            - 'Indeed'
+            - 'Direct'
+            - 'Recruiter'
+            - 'Dice'
+            - 'Friend'
+        title:
+          example: 'VP of Awesome'
+          type: string
+        status:
+          example: 'Applied'
+          type: string
+          enum:
+            - 'Applied'
+            - 'Interviewing'
+            - 'On Hold'
+            - 'Stale'
+            - 'Declined'
+            - 'Rejected'
+        last_active_date:
+          example: '2023-04-01'
+          type: string
+        create_date:
+          example: '2023-03-05'
+          type: string
+        offer_date:
+          example: '2023-06-01'
+          type: string
+        reason:
+          example: 'Pay'
+          type: string
+          enum:
+            - 'Ghost'
+            - 'Location'
+            - 'Pay'
+            - 'Travel'
+            - 'Job'
+            - 'Other'
+        interviews:
+          type: object
+          properties:
+            2a8a9474-ca6f-46a8-837d-12ec11da917b:
+              type: string
+              example: '2023-04-15'
+            a825b18e-e7f8-4bd0-a779-52d706e29b8a:
+              type: string
+              example: '2023-04-20'
+
+    JobsOut:
+      type: object
+      description: 'Job Object'
+      properties:
+        aecb77e5-5f38-4dbe-b1f4-15119384ccce:
+          type: object
+          properties:
+            id:
+              example: 'aecb77e5-5f38-4dbe-b1f4-15119384ccce'
+              type: string
+            company:
+              example: 'Brand X'
+              type: string
+              description: 'Either Company or Recruiter are required'
+            notes:
+              example: 'Something about Cyber Security with a Telco in Austin'
+              type: string
+              default: ''
+            recruiter:
+              example: 'In Global Power Systems'
+              type: string
+              description: 'Either Company or Recruiter are required'
+            source:
+              example: 'Direct'
+              type: string
+              enum:
+                - 'LinkedIn'
+                - 'Indeed'
+                - 'Direct'
+                - 'Recruiter'
+                - 'Dice'
+                - 'Friend'
+            title:
+              example: 'VP of Awesome'
+              type: string
+            status:
+              example: 'Applied'
+              type: string
+              enum:
+                - 'Applied'
+                - 'Interviewing'
+                - 'On Hold'
+                - 'Stale'
+                - 'Declined'
+                - 'Rejected'
+            last_active_date:
+              example: '2023-04-01'
+              type: string
+            create_date:
+              example: '2023-03-05'
+              type: string
+            offer_date:
+              example: '2023-06-01'
+              type: string
+            reason:
+              example: 'Pay'
+              type: string
+              enum:
+                - 'Ghost'
+                - 'Location'
+                - 'Pay'
+                - 'Travel'
+                - 'Job'
+                - 'Other'
+            interviews:
+              type: object
+              properties:
+                2a8a9474-ca6f-46a8-837d-12ec11da917b:
+                  type: string
+                  example: '2023-04-15'
+                a825b18e-e7f8-4bd0-a779-52d706e29b8a:
+                  type: string
+                  example: '2023-04-20'
+        becb77e5-5f38-4dbe-b1f4-15119384ccce:
+          type: object
+          properties:
+            id:
+              example: 'becb77e5-5f38-4dbe-b1f4-15119384ccce'
+              type: string
+            company:
+              example: 'Brand X'
+              type: string
+              description: 'Either Company or Recruiter are required'
+            notes:
+              example: 'Something about Cyber Security with a Telco in Austin'
+              type: string
+              default: ''
+            recruiter:
+              example: 'In Global Power Systems'
+              type: string
+              description: 'Either Company or Recruiter are required'
+            source:
+              example: 'Direct'
+              type: string
+              enum:
+                - 'LinkedIn'
+                - 'Indeed'
+                - 'Direct'
+                - 'Recruiter'
+                - 'Dice'
+                - 'Friend'
+            title:
+              example: 'VP of Awesome'
+              type: string
+            status:
+              example: 'Applied'
+              type: string
+              enum:
+                - 'Applied'
+                - 'Interviewing'
+                - 'On Hold'
+                - 'Stale'
+                - 'Declined'
+                - 'Rejected'
+            last_active_date:
+              example: '2023-04-01'
+              type: string
+            create_date:
+              example: '2023-03-05'
+              type: string
+            offer_date:
+              example: '2023-06-01'
+              type: string
+            reason:
+              example: 'Pay'
+              type: string
+              enum:
+                - 'Ghost'
+                - 'Location'
+                - 'Pay'
+                - 'Travel'
+                - 'Job'
+                - 'Other'
+            interviews:
+              type: object
+              properties:
+                2a8a9474-ca6f-46a8-837d-12ec11da917b:
+                  type: string
+                  example: '2023-04-15'
+                a825b18e-e7f8-4bd0-a779-52d706e29b8a:
+                  type: string
+                  example: '2023-04-20'
+
+
+
+
 

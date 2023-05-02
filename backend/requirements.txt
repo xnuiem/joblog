@@ -3,6 +3,6 @@ coverage
 requests
 redis
 pytest
-pyyaml
-APIFlask
-apiflask-generator
+
+
+
