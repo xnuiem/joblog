@@ -50,7 +50,7 @@ def clear_data(key):
 
 
 @app.route('/job', methods=['POST'])
-def create_job(body=None):
+def create_job():
     """Adds a job to the datastore
 
     Creates a job for the first time
