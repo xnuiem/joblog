@@ -141,7 +141,7 @@ class Test_Joblog:
         response = self.send_post('/job/' + self.job_id + '/interview', data)
         res = json.loads(response.data.decode('utf-8'))
 
-        assert response.status_code == 200
+        assert 201 == response.status_code
 
         response = app.test_client().get('/job/' + self.job_id)
         job_new = json.loads(response.data.decode('utf-8'))
@@ -159,11 +159,10 @@ class Test_Joblog:
             "source": "Direct"
         }
 
-        self.response = app.test_client().post('/job', json=self.data, headers=self.create_headers())
+        self.response = self.send_post('/job', self.data)
         res = json.loads(self.response.data.decode('utf-8'))
         self.job_id = res['id']
         return res
-
 
     @staticmethod
     def create_headers():
@@ -173,18 +172,14 @@ class Test_Joblog:
         }
         return headers
 
-
     def send_delete(self, url):
         return app.test_client().delete(url, headers=self.create_headers())
-
 
     def send_post(self, url, data):
         return app.test_client().post(url, json=data, headers=self.create_headers())
 
-
     def send_put(self, url, data):
         return app.test_client().put(url, json=data, headers=self.create_headers())
-
 
     def send_patch(self, url, data):
         return app.test_client().patch(url, json=data, headers=self.create_headers())
