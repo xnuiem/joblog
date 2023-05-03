@@ -3,8 +3,6 @@ import json
 import sys, os, inspect
 from backend.joblog.app import app
 
-from pprint import pprint
-
 cmd_folder = os.path.abspath(os.path.join(os.path.split(inspect.getfile(
     inspect.currentframe()))[0], "../.."))
 if cmd_folder not in sys.path:
@@ -161,7 +159,7 @@ class Test_Joblog:
             "source": "Direct"
         }
 
-        self.response = self.send_post('/job', self.data)
+        self.response = app.test_client().post('/job', json=self.data, headers=self.create_headers())
         res = json.loads(self.response.data.decode('utf-8'))
         self.job_id = res['id']
         return res
