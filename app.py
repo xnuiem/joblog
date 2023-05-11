@@ -1,11 +1,11 @@
 from flask import request, jsonify, Flask
 
-from backend.joblog.error import InvalidUsage
-from backend.joblog.config import Config
-from backend.joblog.data import DataSource
-from backend.joblog.logger import Logger
-from backend.joblog.job import Job
-from backend.joblog.option import Option
+from error import InvalidUsage
+from config import Config
+from data import DataSource
+from logger import Logger
+from job import Job
+from option import Option
 
 app = Flask(__name__)
 app.config.from_object(Config)

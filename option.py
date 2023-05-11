@@ -1,5 +1,5 @@
 from flask import request
-from backend.joblog.error import InvalidUsage
+from error import InvalidUsage
 
 
 class Option:

@@ -1,7 +1,7 @@
 from flask import request
 from datetime import date
-from backend.joblog.error import InvalidUsage
-from backend.joblog.option import Option
+from error import InvalidUsage
+from option import Option
 import uuid
 
 

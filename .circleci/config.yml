@@ -21,19 +21,19 @@ jobs:
             - "${GIT_SSH_DEPLOY_FINGERPRINT}"
 
       - python/install-packages:
-          app-dir: ./backend
+          app-dir: .
           pkg-manager: pip
 
       - run:
           name: Run tests
           command: |
             mkdir test-reports/
-            pytest -ra --junitxml=test-reports/report.xml ./backend/joblog/tests/tests.py
+            pytest -ra --junitxml=test-reports/report.xml tests/tests.py
 
       - run:
           name: run coverage
           command: |
-            python -m coverage run -m pytest backend/joblog/tests/tests.py
+            python -m coverage run -m pytest tests/tests.py
             python -m coverage xml
             python -m coverage html
             cp htmlcov/index.html test-reports/coverage.html
