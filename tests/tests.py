@@ -119,16 +119,17 @@ class Test_Joblog:
     def test_get_job_list(self):
         res = self.set_base_data()
         res1 = self.set_base_data()
+        res2 = self.patch_base_data()
 
         response = app.test_client().get('/jobs')
         jobs = json.loads(response.data.decode('utf-8'))
 
-        job1 = jobs[res['id']]
-        job2 = jobs[res1['id']]
+        job1 = jobs[0]
+        job2 = jobs[1]
 
-        assert res['title'] == job1['title']
-        assert res1['title'] == job2['title']
-        assert job1['company'] == job2['company']
+        assert res1['title'] == job1['title']
+        assert job1['title'] != job2['title']
+        assert job1['company'] != job2['company']
         assert response.status_code == 200
 
     @pytest.mark.interview
@@ -162,6 +163,16 @@ class Test_Joblog:
         self.response = self.send_post('/job', self.data)
         res = json.loads(self.response.data.decode('utf-8'))
         self.job_id = res['id']
+        return res
+
+    def patch_base_data(self):
+        data = {
+            "title": "VP of Second",
+            "company": "ACME2",
+            "source": "Direct"
+        }
+        response = self.send_patch('/job/' + self.job_id, data)
+        res = json.loads(response.data.decode('utf-8'))
         return res
 
     @staticmethod

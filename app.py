@@ -1,5 +1,5 @@
 from flask import request, jsonify, Flask
-
+from flask_cors import CORS
 from error import InvalidUsage
 from config import Config
 from data import DataSource
@@ -8,6 +8,7 @@ from job import Job
 from option import Option
 
 app = Flask(__name__)
+CORS(app)
 app.config.from_object(Config)
 
 logger = Logger(Config).logger
@@ -96,12 +97,12 @@ def handle_interview(job_id, int_id):
 
 @app.route('/jobs', methods=['GET'])
 def get_jobs():
-    job_list = {}
+    job_list = []
     job_obj = create_job_obj()
     jobs = job_obj.get_list()
     for i in jobs:
         job_obj.get(i)
-        job_list.update({job_obj.id: job_obj.jobDict()})
+        job_list.append(job_obj.jobDict())
 
     return jsonify(job_list)
 
@@ -130,4 +131,4 @@ def handle_invalid_usage(error_obj):
 
 
 if __name__ == '__main__':
-    app.run(host="localhost", port=5000)
+    app.run(debug=True)
